@@ -14,7 +14,10 @@ const postCityName = async(req, res) => {
 
 const getCities = async(req, res) => {
     try{
-        const cities = await City.find({}).populate('stateId')
+        const pageValue = await (req.body.page || 0)
+        const limitValue = await (req.body.limit || 2)
+        const skipValue  = await (pageValue * limitValue)
+        const cities = await City.find({}).populate('stateId').limit(limitValue).skip(skipValue)
         res.status(201).json({status: true, cities})
     } catch(e){
         res.status().json({status: false, message: e})

@@ -15,7 +15,10 @@ const postStateName = async (req, res) => {
 
 const listStateNames = async (req, res) => {
     try{
-        const states = await State.find({}).populate('countryId') 
+        const pageValue = await (req.body.page || 0)
+        const limitValue = await (req.body.limit || 2)
+        const skipValue  = (pageValue * limitValue)
+        const states = await State.find({}).populate('countryId').limit(limitValue).skip(skipValue)
         console.log(states)
         res.status(201).json({status: true, states})
     } catch(e){
