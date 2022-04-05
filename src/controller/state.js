@@ -15,14 +15,26 @@ const postStateName = async (req, res) => {
 
 const listStateNames = async (req, res) => {
     try{
-        const pageValue = await (req.body.page || 0)
-        const limitValue = await (req.body.limit || 2)
+        const pageValue = (req.body.page || 0)
+        const limitValue = (req.body.limit || 2)
         const skipValue  = (pageValue * limitValue)
         const states = await State.find({}).populate('countryId').limit(limitValue).skip(skipValue)
         console.log(states)
         res.status(201).json({status: true, states})
     } catch(e){
         res.status(400).json({status: false, message: e})
+    }
+}
+
+const getStateNameFromCountry = async(req, res) => {
+    try{
+        const pageValue = (req.body.page || 0)
+        const limitValue = (req.body.limit || 2)
+        const skipValue  = (pageValue * limitValue)
+        const states = await State.find({countryId: req.params.id}).populate('countryId').limit(limitValue).skip(skipValue)
+        res.status(201).json({status:true, states})
+    } catch(e){
+        res.status(400).json({status:false, message: e})
     }
 }
 
@@ -64,4 +76,4 @@ const deleteStateNamebyId = async (req, res) => {
     }
 }
 
-module.exports = { postStateName, listStateNames, stateNameById, updateStateNamebyId, deleteStateNamebyId }
+module.exports = { postStateName, listStateNames, getStateNameFromCountry, stateNameById, updateStateNamebyId, deleteStateNamebyId }

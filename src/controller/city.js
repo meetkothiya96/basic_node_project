@@ -14,13 +14,28 @@ const postCityName = async(req, res) => {
 
 const getCities = async(req, res) => {
     try{
-        const pageValue = await (req.body.page || 0)
-        const limitValue = await (req.body.limit || 2)
-        const skipValue  = await (pageValue * limitValue)
+        const pageValue = (req.body.page || 0)
+        const limitValue = (req.body.limit || 2)
+        const skipValue  = (pageValue * limitValue)
         const cities = await City.find({}).populate('stateId').limit(limitValue).skip(skipValue)
         res.status(201).json({status: true, cities})
     } catch(e){
-        res.status().json({status: false, message: e})
+        res.status(400).json({status: false, message: e})
+    }
+}
+
+const getCityNameFromState = async (req, res) => {
+    try{
+        const pageValue = (req.body.page || 0)
+        const limitValue = (req.body.limit || 2)
+        const skipValue  = (pageValue * limitValue)
+        const city = await City.find({stateId: req.params.id}).populate('stateId').limit(limitValue).skip(skipValue)
+        if(!city){
+            res.status(401).json({status: true, message: 'City not Found!'})
+        }
+        res.status(201).json({status: true, city})
+    }catch(e){
+        res.status(400).json({status: false, message: e})
     }
 }
 
@@ -63,4 +78,4 @@ const deleteCityById = async(req, res) => {
     }
 }
 
-module.exports = {postCityName, getCities, getCityById, updateCityNamebyId, deleteCityById}
+module.exports = {postCityName, getCities, getCityNameFromState, getCityById, updateCityNamebyId, deleteCityById}

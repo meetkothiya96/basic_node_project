@@ -14,9 +14,9 @@ const createUser = async(req, res) => {
 
 const getUsers = async(req, res) => {
     try{
-        const pageValue = await (req.body.page || 0)
-        const limitValue = await (req.body.limit || 2)
-        const skipValue  = await (pageValue * limitValue)
+        const pageValue = (req.body.page || 0)
+        const limitValue = (req.body.limit || 2)
+        const skipValue  = (pageValue * limitValue)
         const users = await User.find({}).populate('cityId').limit(limitValue).skip(skipValue)
         res.status(201).json({status:true, users})
     } catch(e){

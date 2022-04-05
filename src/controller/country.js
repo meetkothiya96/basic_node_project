@@ -15,10 +15,10 @@ const postCountryName = async (req, res) => {
 
 const getCountryList = async (req, res) => {
     try{
-        const pageValue = await (req.body.page || 0)
-        const limitValue = await (req.body.limit || 2)
-        const skipValue  = await (pageValue * limitValue)
-        const countries = await Country.find({}).limit(limitValue).skip(skipValue)
+        const pageValue = (req.body.page || 0)
+        const limitValue = (req.body.limit || 2)
+        const skipValue  = (pageValue * limitValue)
+        const countries =await  Country.find({}).limit(limitValue).skip(skipValue)
         res.json({status:true, countries})
     } catch(e){
         res.status(400).json({status:false, message: e})
