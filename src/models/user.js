@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
+const multer = require('multer')
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -35,6 +36,8 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'City'
+    }, image: {
+        type: Buffer
     }
 })
 

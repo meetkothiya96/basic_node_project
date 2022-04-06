@@ -1,8 +1,10 @@
 const express = require('express')
 const router = new express.Router()
-const {createUser, getUsers, getUserById, updateUserbyId, deleteUserbyId} = require('../controller/user')
+const multer = require('multer')
+const {createUser, upload, getUsers, getUserById, updateUserbyId, deleteUserbyId} = require('../controller/user')
+const User = require('../models/user')
 
-router.post('/', (req, res) => {
+router.post('/', upload.single('image'), (req, res) => {
     createUser(req, res)
 })
 

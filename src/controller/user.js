@@ -1,16 +1,41 @@
 const User = require('../models/user')
+const multer = require('multer')
 
 const createUser = async(req, res) => {
     try{
         const {firstName, lastName, email, phoneNumber, cityId} = req.body
         const dataToSave = {firstName, lastName, email, phoneNumber, cityId}
+        console.log(req.file.buffer)
         const user = await new User(dataToSave)
+        user.profile = req.file.buffer
         await user.save()
         res.status(201).json({status: true, user})
     } catch(e){
         res.status(400).json({status: false, message: e})
     }
 }
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'images')
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname)
+    }
+})
+
+const upload = multer({
+    storage : storage,
+    limits:{
+        fileSize: 2000000
+    },
+    fileFilter(req, file, cb){
+        if(!file.originalname.match(/\.(jpg|jpeg|png)$/)){
+            return cb(new Error('Please upload an image'))
+        }
+        cb(undefined, true)
+    }
+})
 
 const getUsers = async(req, res) => {
     try{
@@ -69,4 +94,4 @@ const deleteUserbyId = async(req, res) => {
     }
 }
 
-module.exports = {createUser, getUsers, getUserById, updateUserbyId, deleteUserbyId}
+module.exports = {createUser, upload, getUsers, getUserById, updateUserbyId, deleteUserbyId}
