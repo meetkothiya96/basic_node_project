@@ -16,7 +16,7 @@ router.get('/list/:id', (req, res) => {
     getUserById(req, res)
 })
 
-router.patch('/update/:id', (req, res) => {
+router.patch('/update/:id', upload.single('image'), (req, res) => {
     updateUserbyId(req, res)
 })
 

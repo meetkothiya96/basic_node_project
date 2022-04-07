@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         ref: 'City'
     }, image: {
-        type: Buffer
+        type: String
     }
 })
 

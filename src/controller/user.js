@@ -1,13 +1,16 @@
 const User = require('../models/user')
 const multer = require('multer')
+const fs = require('fs')
 
 const createUser = async(req, res) => {
     try{
+        if(!req.file){
+            console.log('No file')
+        }
         const {firstName, lastName, email, phoneNumber, cityId} = req.body
         const dataToSave = {firstName, lastName, email, phoneNumber, cityId}
-        console.log(req.file.buffer)
         const user = await new User(dataToSave)
-        user.profile = req.file.buffer
+        user.image = req.file.originalname
         await user.save()
         res.status(201).json({status: true, user})
     } catch(e){
@@ -63,13 +66,22 @@ const getUserById = async(req, res) => {
 
 const updateUserbyId = async(req, res) => {
     const updates = Object.keys(req.body)
-    const allowedUpdates = ['firstName', 'lastName', 'email', 'phoneNumber']
+    const allowedUpdates = ['firstName', 'lastName', 'email', 'phoneNumber', 'image']
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
     if(!isValidOperation){
         res.status(401).json({status: true, message: 'Update field is not present'})
     }
     try{
         const user = await User.findById(req.params.id).populate('cityId')
+        if(req.file){
+            const filePath = 'images/' + user.image
+            fs.unlink(filePath, (res, err) => {
+                if(err){
+                    console.error(err)
+                }
+            })
+            user.image = req.file.originalname
+        }
         updates.forEach((update) => user[update] = req.body[update])
         await user.save()
         if(!user){
@@ -85,8 +97,14 @@ const deleteUserbyId = async(req, res) => {
     try{
         const user = await User.findById(req.params.id)
         if(!user){
-            res.status().json({status: true, message: 'User not Found!'})
+            res.status(401).json({status: true, message: 'User not Found!'})
         }
+        const pathFile = 'images/' + user.image
+        fs.unlink(pathFile, (res, err) => {
+            if(err){
+                console.error(err)
+            }
+        })
         await user.remove()
         res.status(201).json({status: true, user})
     }catch(e){
