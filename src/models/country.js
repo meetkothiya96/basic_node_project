@@ -7,7 +7,7 @@ const countrySchema = new mongoose.Schema({
         trim: true
     }
 })
-
+ 
 const Country = mongoose.model('Country', countrySchema)
 
 module.exports = Country

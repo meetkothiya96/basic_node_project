@@ -11,7 +11,7 @@ const stateSchema = new mongoose.Schema({
         required: true,
         ref: 'Country'
     }
-})
+}) 
 
 const State = mongoose.model('State', stateSchema)
 
